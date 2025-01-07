@@ -52,12 +52,14 @@ select = [
     "B",  # flake8-bugbear
     "D",  # pydocstyle
     "E", "W",  # pycodestyle
-    "F",  # Pyflakes
-    "I",  # isort
-    "NPY", # NumPy-specific rules
-    "PT", # flake8-pytest-style
-    "RUF", # Ruff-specific rules
-    "UP", # pyupgrade
+    "F",    # Pyflakes
+    "I",    # isort
+    "NPY",  # NumPy-specific rules
+    "PT",   # flake8-pytest-style
+    "PYI",  # flake8-pyi
+    "RUF",  # Ruff-specific rules
+    "SIM",  # flake8-simplify
+    "UP",   # pyupgrade
 ]
 ignore = [
     "D105",  # Missing docstring in magic method

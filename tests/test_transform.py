@@ -280,12 +280,12 @@ class PyAffineTestCase(unittest.TestCase):
         t2 = Affine(6, 5, 4, 3, 2, 1)
         t3 = Affine(1, 2, 3, 4, 5, 6)
         assert t1 == t3
-        assert not t1 == t2
-        assert t2 == t2
-        assert not t1 != t3
-        assert not t2 != t2
         assert t1 != t2
-        assert not t1 == 1
+        assert t2 == t2
+        assert t1 == t3
+        assert t2 == t2
+        assert t1 != t2
+        assert t1 != 1
         assert t1 != 1
 
     def test_gt(self):

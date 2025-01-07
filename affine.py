@@ -32,7 +32,7 @@ copyright statement below.
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #############################################################################
 
-from functools import cached_property
+from functools import cache, cached_property
 import math
 from typing import Optional
 import warnings
@@ -68,12 +68,18 @@ def cos_sin_deg(deg: float):
     deg = deg % 360.0
     if deg == 90.0:
         return 0.0, 1.0
-    elif deg == 180.0:
+    if deg == 180.0:
         return -1.0, 0
-    elif deg == 270.0:
+    if deg == 270.0:
         return 0, -1.0
     rad = math.radians(deg)
     return math.cos(rad), math.sin(rad)
+
+
+@cache
+def determinant(a: float, b: float, d: float, e: float) -> float:
+    """Evaluate the determinant of the transform matrix."""
+    return a * e - b * d
 
 
 @define(frozen=True)
@@ -341,7 +347,7 @@ class Affine:
         """Alias for 'f'."""
         return self.f
 
-    @cached_property
+    @property
     def determinant(self) -> float:
         """Evaluate the determinant of the transform matrix.
 
@@ -352,7 +358,7 @@ class Affine:
         -------
         float
         """
-        return self.a * self.e - self.b * self.d
+        return determinant(self.a, self.b, self.d, self.e)
 
     @property
     def _scaling(self):
@@ -456,7 +462,7 @@ class Affine:
             and abs(1.0 - (b * b + e * e)) < EPSILON
         )
 
-    @cached_property
+    @property
     def is_degenerate(self) -> bool:
         """Return True if this transform is degenerate.
 
@@ -467,9 +473,9 @@ class Affine:
         -------
         bool
         """
-        return self.determinant == 0.0
+        return determinant(self.a, self.b, self.d, self.e) == 0.0
 
-    @cached_property
+    @property
     def is_proper(self) -> bool:
         """Return True if this transform is proper.
 
@@ -480,7 +486,7 @@ class Affine:
         -------
         bool
         """
-        return self.determinant > 0.0
+        return determinant(self.a, self.b, self.d, self.e) > 0.0
 
     @property
     def column_vectors(self):
@@ -610,7 +616,7 @@ class Affine:
 
     def __imul__(self, other):
         """Provide wrapper for `__mul__`, however `other` is not modified in-place."""
-        if isinstance(other, Affine) or isinstance(other, tuple):
+        if isinstance(other, (Affine, tuple)):
             return self.__mul__(other)
         else:
             return NotImplemented
