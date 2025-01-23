@@ -35,7 +35,6 @@ copyright statement below.
 from functools import cached_property
 import math
 from typing import Optional
-import warnings
 
 from attrs import astuple, define, field
 
@@ -570,16 +569,9 @@ class Affine:
         -------
         Affine or a tuple of two floats
         """
-        sa, sb, sc, sd, se, sf = self.a, self.b, self.c, self.d, self.e, self.f
+        sa, sb, sc, sd, se, sf = self[:6]
         if isinstance(other, Affine):
-            oa, ob, oc, od, oe, of = (
-                other.a,
-                other.b,
-                other.c,
-                other.d,
-                other.e,
-                other.f,
-            )
+            oa, ob, oc, od, oe, of = other[:6]
             return self.__class__(
                 sa * oa + sb * od,
                 sa * ob + sb * oe,
@@ -598,30 +590,14 @@ class Affine:
     def __rmul__(self, other):
         """Right hand multiplication.
 
-        .. deprecated:: 2.3.0
-            Right multiplication will be prohibited in version 3.0. This method
-            will raise AffineError.
-
         Parameters
         ----------
         other : Affine or iterable of (vx, vy)
 
         Returns
         -------
-        Affine
-
-        Notes
-        -----
-        We should not be called if other is an affine instance This is
-        just a guarantee, since we would potentially return the wrong
-        answer in that case.
+        tuple of two floats
         """
-        warnings.warn(
-            "Right multiplication will be prohibited in version 3.0",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        assert not isinstance(other, Affine)
         return self.__mul__(other)
 
     def __imul__(self, other):

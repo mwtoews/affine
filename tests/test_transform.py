@@ -463,21 +463,18 @@ def test_shapely():
 
 def test_imul_number():
     t = Affine(1, 2, 3, 4, 5, 6)
-    try:
+    with pytest.raises(TypeError):
         t *= 2.0
-    except TypeError:
-        assert True
 
 
 def test_mul_tuple():
     t = Affine(1, 2, 3, 4, 5, 6)
-    t * (2.0, 2.0)
+    assert t * (2, 2) == (9, 24)
 
 
 def test_rmul_tuple():
-    with pytest.warns(DeprecationWarning):
-        t = Affine(1, 2, 3, 4, 5, 6)
-        (2.0, 2.0) * t
+    t = Affine(1, 2, 3, 4, 5, 6)
+    assert (2, 2) * t == (9, 24)
 
 
 def test_associative():
